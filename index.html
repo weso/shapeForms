@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title class="shxm">ShapeForms</title>
+
+    <link rel="stylesheet" href="./web/static/css/app.css">
+    <link rel="stylesheet" href="./lib/codemirror-5.51.0/lib/codemirror.css">
+    <link rel="stylesheet" href="./lib/codemirror-5.51.0/theme/ayu-mirage.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/img/favicon-16x16.png">
+
+    <script src="./lib/codemirror-5.51.0/lib/codemirror.js"></script>
+    <script src="./lib/codemirror-5.51.0/mode/xml/xml.js"></script>
+    <script src="./lib/codemirror-5.51.0/mode/shex/shex.js"></script>
+
+</head>
+<body>
+<header class="header">
+    <h1>ShapeForms</h1>
+</header>
+
+<section id="editorcontainer">
+    <div class="centerdiv">
+        <button id="shextoform" class="btn1">Create Form</button>
+    </div>
+    <div class="centerdiv">
+        <label for="shextext"></label>
+		<textarea id="shextext"></textarea>
+    </div>
+
+</section>
+<section id="resultform">
+</section>
+<pre id="output">
+</pre>
+<script src="./main.js"></script>
+</body>
+
+</html>

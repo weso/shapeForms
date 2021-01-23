@@ -1,0 +1,89 @@
+body {
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+}
+
+h1 {
+    color: black;
+    font-size: 38px;
+}
+
+h2 {
+    color: black;
+    font-size: 28px;
+    text-align:center;
+}
+
+p {
+    font-size: 20px;
+}
+
+.CodeMirror {
+    border: 1px solid #eee;
+    height: auto;
+}
+
+.header img {
+    float: left;
+    width: 80px;
+    height: 100px;
+    padding-left: 20px;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.header h1 {
+	text-align: center;
+    font-size: 25px;
+	margin: 15px;
+}
+
+p {
+    padding-left: 60px;
+    padding-right: 60px;
+    text-align: justify;
+}
+
+.centerdiv {
+    display: flex;
+    justify-content: center;
+}
+.btn1 {
+	color: #fff;
+	background-color: #6c757d;
+	border-color: #6c757d;
+    display: inline-block;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	margin: 1.5em;
+}
+.btn1:hover {
+    background-color: darkred;
+}
+.btn1:active {
+    position:relative;
+    top:1px;
+}
+
+
+.active {
+    background-color: #4CAF50; /* Add an active/current color */
+}
+
+.displaydiv {
+    width: 45%;
+    height: 650px;
+    margin-left: 1.5em;
+    margin-right: 1.55em;
+    border: double black;
+}
+
+
