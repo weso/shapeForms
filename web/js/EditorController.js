@@ -26,5 +26,17 @@ function shExToForm() {
 	
 	$("#output").text(html);
 	$("#resultform").html(html);
+	
+	$("#editorcontainer").css("display", "none");
+	$("#back").css("display", "inherit");
+	$("#resultform").css("display", "inherit");
 
+}
+
+$("#back").click(backToEditor);
+
+function backToEditor() {
+	$("#editorcontainer").css("display", "inherit");
+	$("#back").css("display", "none");
+	$("#resultform").css("display", "none");
 }

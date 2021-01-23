@@ -48,42 +48,97 @@ p {
     justify-content: center;
 }
 .btn1 {
-	color: #fff;
-	background-color: #6c757d;
-	border-color: #6c757d;
-    display: inline-block;
-	font-weight: 400;
 	text-align: center;
 	vertical-align: middle;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	padding: .375rem .75rem;
-	font-size: 1rem;
-	line-height: 1.5;
-	border-radius: .25rem;
-	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 	margin: 1.5em;
 }
-.btn1:hover {
-    background-color: darkred;
-}
-.btn1:active {
-    position:relative;
-    top:1px;
-}
-
 
 .active {
     background-color: #4CAF50; /* Add an active/current color */
 }
 
-.displaydiv {
-    width: 45%;
-    height: 650px;
-    margin-left: 1.5em;
-    margin-right: 1.55em;
-    border: double black;
+input, select {
+	width: 100%;
+	max-width: 50em;
+	border: 1px solid #a2a9b1;
+	border-radius: 2px;
+	padding: 5px 8px;
+	margin-bottom: 12px;
+}
+
+input {
+	max-width: 50em;
+}
+
+select {
+	max-width: 51.5em;
+}
+
+input:focus {
+    border-color: blue;
+}
+
+input[type="submit"], button {
+	color: #fff;
+	background-color: #36c;
+	border-color: #36c;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: max-content;
+	line-height: 1;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 2px;
+	padding-left: 12px;
+	padding-right: 12px;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: pointer;
+	font-family: inherit;
+	font-size: inherit;
+}
+
+input[type="submit"]:hover, button:hover {
+	background-color: #38c;
+}
+
+input[type="submit"]:active, button:active {
+	background-color: #34a;
+}
+
+input[readonly] {
+  background-color: #eee;
+} 
+
+label {
+	padding-bottom: 4px;
+}
+
+.wikidata {
+	display: grid;
+	border: 1px solid #a2a9b1;
+	border-radius: 2px;
+	padding: 12px 16px 16px;
+	margin: 5em;
+	font-family: sans-serif;
+	font-size: 0.875em;
+}
+
+.wikidata h3 {
+	font-size: 1.15em;
+	font-weight: bold;
+}
+
+.innerform {
+	display: grid;
+	border-top: 1px solid #a2a9b1;
+	border-bottom: 1px solid #a2a9b1;
+	margin-bottom: 2em;
+}
+
+.innerform h3 {
+	font-size: 1em;
+	font-weight: bold;
 }
 
 

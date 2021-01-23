@@ -30,15 +30,15 @@ class ShExParser {
 	for(let prefix in source.prefixes) {
 		this.prefixes.set(source.prefixes[prefix], prefix);
     }
-	
-	console.log(this.prefixes);
 
 	//El formulario será el de la shape start
 	if(source.start) {
-		form += this.fg.createForm(source.shapes[source.start.reference], source.start.reference, this.prefixes);
+		this.fg.prefixes = this.prefixes;
+		this.fg.shapes = source.shapes;
+		form += this.fg.createForm(source.shapes[source.start.reference], source.start.reference);
 	}
     
-
+	form += '<input type="submit" value="Create"/>';
     form += '</form>';
 
     return form;
