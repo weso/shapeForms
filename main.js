@@ -126266,7 +126266,22 @@ class FormGenerator {
 			return this.checkTripleConstraint(exp);
 		}
 		else if(exp.type === "OneOf") {
-			return "";
+			let div = '<div class="orform">';
+			for(let i = 0; i < exp.expressions.length; i++) {
+					if(i > 0) {
+						div += "<h3>OR</h3>";
+					}
+					div += this.checkExpression(exp.expressions[i]);
+			}
+			div += '</div>';
+			return div;
+		}
+		else if(exp.type === "EachOf") {
+			let tcs = "";
+			for(let i = 0; i < exp.expressions.length; i++) {
+					tcs += this.checkExpression(exp.expressions[i]);
+			}
+			return tcs;
 		}
 	}
 	

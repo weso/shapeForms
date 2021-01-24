@@ -4,43 +4,18 @@ body {
 
 h1 {
     color: black;
-    font-size: 38px;
-}
-
-h2 {
-    color: black;
-    font-size: 28px;
-    text-align:center;
-}
-
-p {
-    font-size: 20px;
+    font-size: 2.714em;
 }
 
 .CodeMirror {
-    border: 1px solid #eee;
+    border: 0.071em solid #eee;
     height: auto;
-}
-
-.header img {
-    float: left;
-    width: 80px;
-    height: 100px;
-    padding-left: 20px;
-    padding-right: 20px;
-    cursor: pointer;
 }
 
 .header h1 {
 	text-align: center;
-    font-size: 25px;
-	margin: 15px;
-}
-
-p {
-    padding-left: 60px;
-    padding-right: 60px;
-    text-align: justify;
+    font-size: 1.786em;
+	margin: 1.071em;
 }
 
 .centerdiv {
@@ -60,10 +35,10 @@ p {
 input, select {
 	width: 100%;
 	max-width: 50em;
-	border: 1px solid #a2a9b1;
-	border-radius: 2px;
-	padding: 5px 8px;
-	margin-bottom: 12px;
+	border: 0.071em solid #a2a9b1;
+	border-radius: 0.143em;
+	padding: 0.357em 0.571em;
+	margin-bottom: 0.857em;
 }
 
 input {
@@ -82,15 +57,15 @@ input[type="submit"], button {
 	color: #fff;
 	background-color: #36c;
 	border-color: #36c;
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding-top: 0.357em;
+	padding-bottom: 0.357em;
 	width: max-content;
 	line-height: 1;
 	border-style: solid;
-	border-width: 1px;
-	border-radius: 2px;
-	padding-left: 12px;
-	padding-right: 12px;
+	border-width: 0.071em;
+	border-radius: 0.143em;
+	padding-left: 0.857em;
+	padding-right: 0.857em;
 	font-weight: bold;
 	text-decoration: none;
 	cursor: pointer;
@@ -111,14 +86,14 @@ input[readonly] {
 } 
 
 label {
-	padding-bottom: 4px;
+	padding-bottom: 0.286em;
 }
 
 .wikidata {
 	display: grid;
-	border: 1px solid #a2a9b1;
-	border-radius: 2px;
-	padding: 12px 16px 16px;
+	border: 0.071em solid #a2a9b1;
+	border-radius: 0.143em;
+	padding: 0.857em 1.143em 1.143em;
 	margin: 5em;
 	font-family: sans-serif;
 	font-size: 0.875em;
@@ -131,14 +106,30 @@ label {
 
 .innerform {
 	display: grid;
-	border-top: 1px solid #a2a9b1;
-	border-bottom: 1px solid #a2a9b1;
+	border-top: 0.071em solid #a2a9b1;
+	border-bottom: 0.071em solid #a2a9b1;
 	margin-bottom: 2em;
 }
 
 .innerform h3 {
 	font-size: 1em;
 	font-weight: bold;
+}
+
+.orform {
+	display: grid;
+	border-left: 0.071em solid #a2a9b1;
+	margin-bottom: 0.857em;
+	padding-left: 1em;
+}
+
+.orform h3 {
+	font-size: 0.875em;
+	font-weight: bold;
+}
+
+.orform input {
+	max-width: 49em;
 }
 
 
