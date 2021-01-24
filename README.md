@@ -4,7 +4,7 @@ Creating UI forms from ShEx
 Shape Start is required.
 
 Initial Trial Shape:
-`
+```
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX vc: <http://www.w3.org/2006/vcard/ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -52,6 +52,4 @@ start=@<#UserProfile>
   "United States"
   "Zimbabwe"
 ]
-
-
-`
+```
