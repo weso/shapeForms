@@ -12,11 +12,7 @@ class FormGenerator {
 		this.current = shName;
 		//Nombre del formulario
 		if(shape.annotations) {
-			for(let i = 0; i < shape.annotations.length; i++) {
-				if(shape.annotations[i].predicate === "http://www.w3.org/ns/ui#label") {
-					mainLabel = shape.annotations[i].object.value;
-				}
-			}
+			mainLabel = this.getAnnotations(shape.annotations).label;
 		}
 		if(!mainLabel) {
 			mainLabel = this.getPrefixedTerm(shName);
@@ -28,6 +24,9 @@ class FormGenerator {
 			for(let i = 0; i < shape.expression.expressions.length; i++) {
 				form += this.checkExpression(shape.expression.expressions[i]);
 			}
+		}
+		else if (shape.expression) {
+			form += this.checkExpression(shape.expression);
 		}
 		
 		return form;
@@ -65,10 +64,9 @@ class FormGenerator {
 			else {
 				let id = this.current + "-a";
 				let label = "a";
-				for(let i = 0; i < exp.annotations.length; i++) {
-					if(exp.annotations[i].predicate === "http://www.w3.org/ns/ui#label") {
-						label = exp.annotations[i].object.value;
-					}
+				let res = this.getAnnotations(exp.annotations);
+				if(res.label !== "") {
+					label = res.label;
 				}
 				let sel = `<label for="${id}">${label}:</label><select name="${id}">`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
@@ -80,22 +78,32 @@ class FormGenerator {
 			}
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "NodeConstraint") {
-			let type = this.determineType(exp.valueExpr);
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
 			if(exp.annotations) {
-				for(let i = 0; i < exp.annotations.length; i++) {
-					if(exp.annotations[i].predicate === "http://www.w3.org/ns/ui#label") {
-						label = exp.annotations[i].object.value;
-					}
-					else if(exp.annotations[i].predicate === "http://janeirodigital.com/layout#readonly") {
-						readonly = `readonly=${exp.annotations[i].object.value}`;
-					}
+				let res = this.getAnnotations(exp.annotations);
+				if(res.label !== "") {
+					label = res.label;
 				}
-		}
-			return `<label for="${id}">${label}:</label>` +
-					`<input type="${type}" id="${id}" name="${id}" ${readonly}>`;
+				readonly = res.readonly;
+			}
+			if(exp.valueExpr.values) {	// [...]
+				if(exp.valueExpr.values.length === 1) return "";
+				let select = `<label for="${id}">${label}:</label><select name="${id}">`;
+				for(let i = 0; i < exp.valueExpr.values.length; i++) {
+					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
+					select += `<option value="${valor}">${valor}</option>`;
+				}
+				select += '</select>';
+				return select;
+			}
+			else {
+				let type = this.determineType(exp.valueExpr);
+				return `<label for="${id}">${label}:</label>` +
+						`<input type="${type}" id="${id}" name="${id}" ${readonly}>`;
+			}
+			
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "ShapeRef") {
 			let div = "";
@@ -103,14 +111,12 @@ class FormGenerator {
 			if(refShape.type === "NodeConstraint") {
 				let id = this.getPrefixedTerm(exp.predicate);
 				let label = id;
-				for(let i = 0; i < exp.annotations.length; i++) {
-					if(exp.annotations[i].predicate === "http://www.w3.org/ns/ui#label") {
-						label = exp.annotations[i].object.value;
-					}
-				}
+				let res = this.getAnnotations(exp.annotations);
+				if(res.label !== "") { label = res.label; }
 				div = `<label for="${id}">${label}:</label><select name="${id}">`;
 				for(let i = 0; i < refShape.values.length; i++) {
-					div += `<option value="${refShape.values[i].value}">${refShape.values[i].value}</option>`;
+					let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
+					div += `<option value="${valor}">${valor}</option>`;
 				}
 				div += '</select>';
 			}
@@ -120,6 +126,35 @@ class FormGenerator {
 				div += '</div>';
 			}
 			return div;
+		}
+		else if(!exp.valueExpr) {	// . ;
+			let id = this.getPrefixedTerm(exp.predicate);
+			let label = id;
+			let readonly = "";
+			if(exp.annotations) {
+				let res = this.getAnnotations(exp.annotations);
+				if(res.label !== "") { label = res.label; }
+				readonly = res.readonly;
+			}
+			return `<label for="${id}">${label}:</label>` +
+					`<input type="text" id="${id}" name="${id}" ${readonly}>`;
+		}
+	}
+	
+	getAnnotations(ans) {
+		let label = "";
+		let readonly = "";
+		for(let i = 0; i < ans.length; i++) {
+			if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
+				label = ans[i].object.value;
+			}
+			else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
+				readonly = `readonly=${ans[i].object.value}`;
+			}
+		}
+		return {
+			label: label,
+			readonly: readonly
 		}
 	}
 	
