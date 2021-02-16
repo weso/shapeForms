@@ -126285,7 +126285,6 @@ class FormGenerator {
 	}
 	
 	checkTripleConstraint(exp) {
-		console.log(exp);
 		if(exp.predicate === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
 			if(exp.valueExpr.values.length <= 1) {
 				return "";
@@ -126307,7 +126306,6 @@ class FormGenerator {
 			}
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "NodeConstraint") {
-			console.log(exp.valueExpr );
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
@@ -126329,9 +126327,14 @@ class FormGenerator {
 				return select;
 			}
 			else {
+				console.log(exp);
 				let type = this.determineType(exp.valueExpr);
+				let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
 				return `<label for="${id}">${label}:</label>` +
-						`<input type="${type}" id="${id}" name="${id}" ${readonly}>`;
+						`<input type="${type}" id="${id}" name="${id}" ${readonly} ${required}>`;
 			}
 			
 		}
@@ -126361,13 +126364,14 @@ class FormGenerator {
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
+			let required = "true";
 			if(exp.annotations) {
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") { label = res.label; }
 				readonly = res.readonly;
 			}
 			return `<label for="${id}">${label}:</label>` +
-					`<input type="text" id="${id}" name="${id}" ${readonly}>`;
+					`<input type="text" id="${id}" name="${id}" ${readonly} required="${required}">`;
 		}
 	}
 	
