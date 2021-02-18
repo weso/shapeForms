@@ -19,6 +19,8 @@ start=@<#UserProfile>
   solid:webid IRI
     // ui:label "profile webid"
     // :readonly true ;
+  vc:age xsd:int MinInclusive 18;
+  :dni xsd:string Length 9;
   (   foaf:name xsd:string MinLength 2
     | foaf:givenName xsd:string ;
       foaf:familyName xsd:string
