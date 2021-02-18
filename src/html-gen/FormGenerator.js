@@ -101,12 +101,13 @@ class FormGenerator {
 			else {
 				console.log(exp);
 				let type = this.determineType(exp.valueExpr);
+				let facetas = this.getFacets(exp.valueExpr);
 				let required = "required";
 				if(exp.min === 0) {
 					required="";
 				}
 				return `<label for="${id}">${label}:</label>` +
-						`<input type="${type}" id="${id}" name="${id}" ${readonly} ${required}>`;
+						`<input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>`;
 			}
 			
 		}
@@ -168,10 +169,41 @@ class FormGenerator {
 		if(ve.nodeKind === "iri") {
 			return "url";
 		}
-		if(ve.datatype === "http://www.w3.org/2001/XMLSchema#integer") {
+		if(ve.datatype === "http://www.w3.org/2001/XMLSchema#integer" || ve.datatype === "http://www.w3.org/2001/XMLSchema#int") {
 			return "number";
 		}
 		return "text";
+	}
+	
+	getFacets(ve) {
+		let fcs = "";
+		if(ve.minlength) {
+			fcs += `minlength=${ve.minlength}`
+		}
+		if(ve.maxlength) {
+			fcs += ` maxlength=${ve.maxlength}`
+		}
+		if(ve.length) {
+			fcs += ` minlength=${ve.length} maxlength=${ve.length}`
+		}
+		if(ve.minexclusive) {
+			let mex = ve.minexclusive + 1;
+			fcs += ` min=${mex}`
+		}
+		if(ve.mininclusive) {
+			fcs += ` min=${ve.mininclusive}`
+		}
+		if(ve.maxexclusive) {
+			let mex = ve.maxexclusive - 1;
+			fcs += ` max=${mex}`
+		}
+		if(ve.maxinclusive) {
+			fcs += ` max=${ve.maxinclusive}`
+		}
+		if(ve.pattern) {
+			fcs += ` pattern=${ve.pattern}`
+		}
+		return fcs;
 	}
 
     clear() {
