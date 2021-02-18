@@ -39,7 +39,7 @@ start=@<#UserProfile>
   (   vc:locality xsd:string ? ;
     | vc:region xsd:string ?
   ) ;
-  vc:country-name @<#vcard_country-name> ?
+  vc:country-name @<#vcard_country-name>
     // ui:label "country" ;
   vc:postal-code xsd:string ?
 } // ui:label "Address"
