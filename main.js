@@ -126296,7 +126296,12 @@ class FormGenerator {
 				if(res.label !== "") {
 					label = res.label;
 				}
-				let sel = `<label for="${id}">${label}:</label><select name="${id}">`;
+				let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
+				let sel = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				sel += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let pValue = this.getPrefixedTerm(exp.valueExpr.values[i]);
 					sel += `<option value="${pValue}">${pValue}</option>`;
@@ -126318,7 +126323,12 @@ class FormGenerator {
 			}
 			if(exp.valueExpr.values) {	// [...]
 				if(exp.valueExpr.values.length === 1) return "";
-				let select = `<label for="${id}">${label}:</label><select name="${id}">`;
+				let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
+				let select = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				select += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
 					select += `<option value="${valor}">${valor}</option>`;
@@ -126327,7 +126337,6 @@ class FormGenerator {
 				return select;
 			}
 			else {
-				console.log(exp);
 				let type = this.determineType(exp.valueExpr);
 				let facetas = this.getFacets(exp.valueExpr);
 				let required = "required";
@@ -126347,7 +126356,12 @@ class FormGenerator {
 				let label = id;
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") { label = res.label; }
-				div = `<label for="${id}">${label}:</label><select name="${id}">`;
+				let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
+				div = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				div += `<option></option>`;
 				for(let i = 0; i < refShape.values.length; i++) {
 					let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
 					div += `<option value="${valor}">${valor}</option>`;
@@ -126365,14 +126379,17 @@ class FormGenerator {
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
-			let required = "true";
+			let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
 			if(exp.annotations) {
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") { label = res.label; }
 				readonly = res.readonly;
 			}
 			return `<label for="${id}">${label}:</label>` +
-					`<input type="text" id="${id}" name="${id}" ${readonly} required="${required}">`;
+					`<input type="text" id="${id}" name="${id}" ${readonly} ${required}>`;
 		}
 	}
 	
