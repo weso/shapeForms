@@ -25,7 +25,7 @@ start=@<#UserProfile>
     | foaf:givenName xsd:string ;
       foaf:familyName xsd:string
   )? ;
-  vc:telephone IRI /^tel:\+?[0-9.-]/ ? ;
+  vc:telephone IRI /^tel:\+?[0-9.-]/ + ;
   vc:hasAddress @<#vcard_street-address> * ;
   vc:organization-name xsd:string ?
     // ui:label "company" ;
