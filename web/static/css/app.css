@@ -132,4 +132,20 @@ label {
 	max-width: 49em;
 }
 
+.button {
+  background-color: #e7e7e7;
+  border: none;
+  color: black;
+  padding: 0.3em 0.571em;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 1em;
+}
+
+.button:hover {
+  background-color: darkgray;
+}
 

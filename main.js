@@ -126300,13 +126300,14 @@ class FormGenerator {
 				if(exp.min === 0) {
 					required="";
 				}
-				let sel = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				let button = this.getAddButton(exp.max);
+				let sel = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
 				sel += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let pValue = this.getPrefixedTerm(exp.valueExpr.values[i]);
 					sel += `<option value="${pValue}">${pValue}</option>`;
 				}
-				sel += '</select>';
+				sel += `</select>${button}</div>`;
 				return sel;
 			}
 		}
@@ -126327,13 +126328,14 @@ class FormGenerator {
 				if(exp.min === 0) {
 					required="";
 				}
-				let select = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				let button = this.getAddButton(exp.max);
+				let select = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
 				select += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
 					select += `<option value="${valor}">${valor}</option>`;
 				}
-				select += '</select>';
+				select += `</select>${button}</div>`;
 				return select;
 			}
 			else {
@@ -126343,8 +126345,9 @@ class FormGenerator {
 				if(exp.min === 0) {
 					required="";
 				}
+				let button = this.getAddButton(exp.max);
 				return `<label for="${id}">${label}:</label>` +
-						`<input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>`;
+						`<div><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>${button}</div>`;
 			}
 			
 		}
@@ -126360,13 +126363,14 @@ class FormGenerator {
 				if(exp.min === 0) {
 					required="";
 				}
-				div = `<label for="${id}">${label}:</label><select name="${id}" ${required}>`;
+				let button = this.getAddButton(exp.max);
+				div = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
 				div += `<option></option>`;
 				for(let i = 0; i < refShape.values.length; i++) {
 					let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
 					div += `<option value="${valor}">${valor}</option>`;
 				}
-				div += '</select>';
+				div += `</select>${button}</div>`;
 			}
 			else {
 				div = '<div class="innerform">';
@@ -126388,8 +126392,9 @@ class FormGenerator {
 				if(res.label !== "") { label = res.label; }
 				readonly = res.readonly;
 			}
+			let button = this.getAddButton(exp.max);
 			return `<label for="${id}">${label}:</label>` +
-					`<input type="text" id="${id}" name="${id}" ${readonly} ${required}>`;
+					`<div><input type="text" id="${id}" name="${id}" ${readonly} ${required}>${button}</div>`;
 		}
 	}
 	
@@ -126449,6 +126454,14 @@ class FormGenerator {
 			fcs += ` pattern=${ve.pattern}`
 		}
 		return fcs;
+	}
+	
+	getAddButton(max) {
+		if(!max || max === 1) {
+			return "";
+		}
+		let button = "<a class=\"button\">+</a>";
+		return button;
 	}
 
     clear() {
