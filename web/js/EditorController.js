@@ -30,6 +30,13 @@ function shExToForm() {
 	$("#editorcontainer").css("display", "none");
 	$("#back").css("display", "inherit");
 	$("#resultform").css("display", "inherit");
+	
+	$( ".newButton" ).each(function(index) {
+    $(this).on("click", function(){
+		let id = $(this).prev().attr("id").replace(":", "\\:");
+		$(this).prev().clone().insertAfter("#container-" + id);
+    });
+});
 
 }
 
@@ -40,3 +47,5 @@ function backToEditor() {
 	$("#back").css("display", "none");
 	$("#resultform").css("display", "none");
 }
+
+

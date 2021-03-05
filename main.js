@@ -126345,9 +126345,10 @@ class FormGenerator {
 				if(exp.min === 0) {
 					required="";
 				}
-				let button = this.getAddButton(exp.max);
+				let idDiv = "container-" + id;
+				let button = this.getAddButton(exp.max, id);	
 				return `<label for="${id}">${label}:</label>` +
-						`<div><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>${button}</div>`;
+						`<div id="${idDiv}"><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>${button}</div>`;
 			}
 			
 		}
@@ -126456,11 +126457,11 @@ class FormGenerator {
 		return fcs;
 	}
 	
-	getAddButton(max) {
+	getAddButton(max, id) {
 		if(!max || max === 1) {
 			return "";
 		}
-		let button = "<a class=\"button\">+</a>";
+		let button = `<a class="button newButton">+</a>`;
 		return button;
 	}
 
@@ -126516,6 +126517,13 @@ function shExToForm() {
 	$("#editorcontainer").css("display", "none");
 	$("#back").css("display", "inherit");
 	$("#resultform").css("display", "inherit");
+	
+	$( ".newButton" ).each(function(index) {
+    $(this).on("click", function(){
+		let id = $(this).prev().attr("id").replace(":", "\\:");
+		$(this).prev().clone().insertAfter("#container-" + id);
+    });
+});
 
 }
 
@@ -126526,4 +126534,7 @@ function backToEditor() {
 	$("#back").css("display", "none");
 	$("#resultform").css("display", "none");
 }
+
+
+
 },{"../../src/ShExParser.js":539,"jquery":298}]},{},[541]);
