@@ -24,7 +24,6 @@ function shExToForm() {
 	
 	let html = ShexParser.parseShExToForm(text);
 	
-	$("#output").text(html);
 	$("#resultform").html(html);
 	
 	$("#editorcontainer").css("display", "none");

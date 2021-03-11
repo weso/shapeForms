@@ -126233,6 +126233,7 @@ class FormGenerator {
 		this.prefixes = null;
 		this.shapes = null;
 		this.current = "";
+		this.main = "";
     }
 	
 	createForm(shape, shName) {
@@ -126248,7 +126249,7 @@ class FormGenerator {
 		let form = `<h3>${mainLabel}</h3>`;
 		
 		
-		if(shape.expression.expressions) {
+		if(shape.expression && shape.expression.expressions) {
 			for(let i = 0; i < shape.expression.expressions.length; i++) {
 				form += this.checkExpression(shape.expression.expressions[i]);
 			}
@@ -126301,7 +126302,8 @@ class FormGenerator {
 					required="";
 				}
 				let button = this.getAddButton(exp.max);
-				let sel = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
+				let idDiv = "container-" + id;
+				let sel = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
 				sel += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let pValue = this.getPrefixedTerm(exp.valueExpr.values[i]);
@@ -126329,7 +126331,8 @@ class FormGenerator {
 					required="";
 				}
 				let button = this.getAddButton(exp.max);
-				let select = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
+				let idDiv = "container-" + id;
+				let select = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
 				select += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
@@ -126365,7 +126368,8 @@ class FormGenerator {
 					required="";
 				}
 				let button = this.getAddButton(exp.max);
-				div = `<label for="${id}">${label}:</label><div><select name="${id}" ${required}>`;
+				let idDiv = "container-" + id;
+				div = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
 				div += `<option></option>`;
 				for(let i = 0; i < refShape.values.length; i++) {
 					let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
@@ -126374,8 +126378,13 @@ class FormGenerator {
 				div += `</select>${button}</div>`;
 			}
 			else {
+				if(this.current === exp.valueExpr.reference) return "";
+				//Guardamos la shape actual
+				let prev = this.current;
 				div = '<div class="innerform">';
 				div += this.createForm(refShape, exp.valueExpr.reference);
+				//Recuperamos el valor
+				this.current = prev;
 				div += '</div>';
 			}
 			return div;
@@ -126393,9 +126402,10 @@ class FormGenerator {
 				if(res.label !== "") { label = res.label; }
 				readonly = res.readonly;
 			}
+			let idDiv = "container-" + id;
 			let button = this.getAddButton(exp.max);
 			return `<label for="${id}">${label}:</label>` +
-					`<div><input type="text" id="${id}" name="${id}" ${readonly} ${required}>${button}</div>`;
+					`<div id="${idDiv}"><input type="text" id="${id}" name="${id}" ${readonly} ${required}>${button}</div>`;
 		}
 	}
 	
@@ -126511,7 +126521,6 @@ function shExToForm() {
 	
 	let html = ShexParser.parseShExToForm(text);
 	
-	$("#output").text(html);
 	$("#resultform").html(html);
 	
 	$("#editorcontainer").css("display", "none");
