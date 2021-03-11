@@ -6,9 +6,12 @@ class FormGenerator {
 		this.shapes = null;
 		this.current = "";
 		this.main = "";
+		this.recursividad = 0;
     }
 	
 	createForm(shape, shName) {
+		this.recursividad++;
+		if(this.recursividad > 4) return "";	
 		let mainLabel = null;
 		this.current = shName;
 		//Nombre del formulario
@@ -157,6 +160,7 @@ class FormGenerator {
 				div += this.createForm(refShape, exp.valueExpr.reference);
 				//Recuperamos el valor
 				this.current = prev;
+				this.recursividad--;
 				div += '</div>';
 			}
 			return div;
