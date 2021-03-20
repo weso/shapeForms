@@ -9,7 +9,7 @@ class FormGenerator {
 		this.recursividad = 0;
     }
 	
-	createForm(shape, shName) {
+	createForm(shape, shName, pred) {
 		this.recursividad++;
 		if(this.recursividad > 4) return "";	
 		let mainLabel = null;
@@ -19,7 +19,9 @@ class FormGenerator {
 			mainLabel = this.getAnnotations(shape.annotations).label;
 		}
 		if(!mainLabel) {
-			mainLabel = this.getPrefixedTerm(shName);
+			let predicate = pred ? this.getPrefixedTerm(pred) + " (" : "";
+			let closure = pred ? ")" : "";
+			mainLabel = predicate + this.getPrefixedTerm(shName) + closure;
 		}
 		let form = `<h3>${mainLabel}</h3>`;
 		
@@ -152,12 +154,12 @@ class FormGenerator {
 				}
 				div += `</select>${button}</div>`;
 			}
-			else {
+			else {  //SHAPEREF
 				if(this.current === exp.valueExpr.reference) return "";
 				//Guardamos la shape actual
 				let prev = this.current;
 				div = '<div class="innerform">';
-				div += this.createForm(refShape, exp.valueExpr.reference);
+				div += this.createForm(refShape, exp.valueExpr.reference, exp.predicate);
 				//Recuperamos el valor
 				this.current = prev;
 				this.recursividad--;
