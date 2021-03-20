@@ -126333,7 +126333,7 @@ class FormGenerator {
 				readonly = res.readonly;
 			}
 			if(exp.valueExpr.values) {	// [...]
-				if(exp.valueExpr.values.length === 1) return "";
+				//if(exp.valueExpr.values.length === 1) return "";
 				let required = "required";
 				if(exp.min === 0) {
 					required="";
