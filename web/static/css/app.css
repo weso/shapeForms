@@ -33,7 +33,6 @@ h1 {
 }
 
 input, select {
-	width: 100%;
 	max-width: 50em;
 	border: 0.071em solid #a2a9b1;
 	border-radius: 0.143em;
@@ -47,6 +46,11 @@ input {
 
 select {
 	max-width: 51.5em;
+	width: 25em;
+}
+
+input:not([size]) {
+	width: 40em;
 }
 
 input:focus {

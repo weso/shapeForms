@@ -71,6 +71,7 @@ class FormGenerator {
 				let id = this.current + "-a";
 				let label = "a";
 				let res = this.getAnnotations(exp.annotations);
+				let size = res.size;
 				if(res.label !== "") {
 					label = res.label;
 				}
@@ -80,7 +81,7 @@ class FormGenerator {
 				}
 				let button = this.getAddButton(exp.max);
 				let idDiv = "container-" + id;
-				let sel = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
+				let sel = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
 				sel += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let pValue = this.getPrefixedTerm(exp.valueExpr.values[i]);
@@ -94,12 +95,14 @@ class FormGenerator {
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
+			let size = "";
 			if(exp.annotations) {
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") {
 					label = res.label;
 				}
 				readonly = res.readonly;
+				size = res.size;
 			}
 			if(exp.valueExpr.values) {	// [...]
 				//if(exp.valueExpr.values.length === 1) return "";
@@ -109,7 +112,7 @@ class FormGenerator {
 				}
 				let button = this.getAddButton(exp.max);
 				let idDiv = "container-" + id;
-				let select = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
+				let select = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
 				select += `<option></option>`;
 				for(let i = 0; i < exp.valueExpr.values.length; i++) {
 					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
@@ -145,7 +148,7 @@ class FormGenerator {
 				let idDiv = "container-" + id;
 				let button = this.getAddButton(exp.max, id);	
 				return `<label for="${id}">${label}:</label>` +
-						`<div id="${idDiv}"><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas}>${button}</div>`;
+						`<div id="${idDiv}"><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas} ${size}>${button}</div>`;
 			}
 			
 		}
@@ -157,13 +160,14 @@ class FormGenerator {
 				let label = id;
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") { label = res.label; }
+				let size = res.size;
 				let required = "required";
 				if(exp.min === 0) {
 					required="";
 				}
 				let button = this.getAddButton(exp.max);
 				let idDiv = "container-" + id;
-				div = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required}>`;
+				div = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
 				div += `<option></option>`;
 				for(let i = 0; i < refShape.values.length; i++) {
 					let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
@@ -188,6 +192,7 @@ class FormGenerator {
 			let id = this.getPrefixedTerm(exp.predicate);
 			let label = id;
 			let readonly = "";
+			let size = "";
 			let required = "required";
 				if(exp.min === 0) {
 					required="";
@@ -196,20 +201,25 @@ class FormGenerator {
 				let res = this.getAnnotations(exp.annotations);
 				if(res.label !== "") { label = res.label; }
 				readonly = res.readonly;
+				size = res.size;
 			}
 			let idDiv = "container-" + id;
 			let button = this.getAddButton(exp.max);
 			return `<label for="${id}">${label}:</label>` +
-					`<div id="${idDiv}"><input type="text" id="${id}" name="${id}" ${readonly} ${required}>${button}</div>`;
+					`<div id="${idDiv}"><input type="text" id="${id}" name="${id}" ${readonly} ${required} ${size}>${button}</div>`;
 		}
 	}
 	
 	getAnnotations(ans) {
 		let label = "";
 		let readonly = "";
+		let size = "";
 		for(let i = 0; i < ans.length; i++) {
 			if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
 				label = ans[i].object.value;
+			}
+			else if(ans[i].predicate === "http://www.w3.org/ns/ui#size") {
+				size = 'size="' + ans[i].object.value + '"';
 			}
 			else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
 				readonly = `readonly=${ans[i].object.value}`;
@@ -217,7 +227,8 @@ class FormGenerator {
 		}
 		return {
 			label: label,
-			readonly: readonly
+			readonly: readonly,
+			size: size
 		}
 	}
 	
