@@ -1,9 +1,21 @@
 # shapeForms
-Creating UI forms from ShEx
 
-Shape Start is required.
+This project can generate UI forms from [ShEx](http://shex.io) schemas. 
 
-Initial Trial Shape:
+It takes annotations from the [UI ontology](http://www.w3.org/ns/ui#) which can, for example, customize labels.
+
+## Adoption
+
+The project has been deployed in [RDFShape](http://rdfshape.weso.es).
+
+## Requirements/limitations
+
+It is necessary to declare the start shape.
+
+## Example
+
+You can [try it in RDFShape](https://tinyurl.com/4dwwkctb)
+
 ```
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX vc: <http://www.w3.org/2006/vcard/ns#>
