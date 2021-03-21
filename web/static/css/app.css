@@ -110,9 +110,9 @@ label {
 
 .innerform {
 	display: grid;
-	border-top: 0.071em solid #a2a9b1;
-	border-bottom: 0.071em solid #a2a9b1;
-	margin-bottom: 2em;
+	border: 0.071em solid #555;
+	padding-left: 1em;
+	margin-bottom: 1em;
 }
 
 .innerform h3 {
@@ -122,7 +122,7 @@ label {
 
 .orform {
 	display: grid;
-	border-left: 0.071em solid #a2a9b1;
+	border-left: 0.071em solid #555;
 	margin-bottom: 0.857em;
 	padding-left: 1em;
 }
@@ -133,7 +133,7 @@ label {
 }
 
 .orform input {
-	max-width: 49em;
+	width: 39em;
 }
 
 .button {

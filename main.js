@@ -126241,7 +126241,7 @@ class FormGenerator {
 		this.recursividad = 0;
     }
 	
-	createForm(shape, shName, pred) {
+	createForm(shape, shName, pred, label) {
 		this.recursividad++;
 		if(this.recursividad > 4) return "";	
 		let mainLabel = null;
@@ -126249,6 +126249,9 @@ class FormGenerator {
 		//Nombre del formulario
 		if(shape.annotations) {
 			mainLabel = this.getAnnotations(shape.annotations).label;
+		}
+		if(label) {
+			mainLabel = label;
 		}
 		if(!mainLabel) {
 			let predicate = pred ? this.getPrefixedTerm(pred) + " (" : "";
@@ -126387,11 +126390,12 @@ class FormGenerator {
 		else if(exp.valueExpr && exp.valueExpr.type === "ShapeRef") {
 			let div = "";
 			let refShape = this.shapes[exp.valueExpr.reference];
+			let label = "";
+			let res = this.getAnnotations(exp.annotations);
+			if(res.label !== "") { label = res.label; }
 			if(refShape.type === "NodeConstraint") {
 				let id = this.getPrefixedTerm(exp.predicate);
-				let label = id;
-				let res = this.getAnnotations(exp.annotations);
-				if(res.label !== "") { label = res.label; }
+				label = id;
 				let size = res.size;
 				let required = "required";
 				if(exp.min === 0) {
@@ -126412,7 +126416,7 @@ class FormGenerator {
 				//Guardamos la shape actual
 				let prev = this.current;
 				div = '<div class="innerform">';
-				div += this.createForm(refShape, exp.valueExpr.reference, exp.predicate);
+				div += this.createForm(refShape, exp.valueExpr.reference, exp.predicate, label);
 				//Recuperamos el valor
 				this.current = prev;
 				this.recursividad--;
@@ -126446,17 +126450,20 @@ class FormGenerator {
 		let label = "";
 		let readonly = "";
 		let size = "";
-		for(let i = 0; i < ans.length; i++) {
-			if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
-				label = ans[i].object.value;
-			}
-			else if(ans[i].predicate === "http://www.w3.org/ns/ui#size") {
-				size = 'size="' + ans[i].object.value + '"';
-			}
-			else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
-				readonly = `readonly=${ans[i].object.value}`;
+		if(ans) {
+			for(let i = 0; i < ans.length; i++) {
+				if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
+					label = ans[i].object.value;
+				}
+				else if(ans[i].predicate === "http://www.w3.org/ns/ui#size") {
+					size = 'size="' + ans[i].object.value + '"';
+				}
+				else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
+					readonly = `readonly=${ans[i].object.value}`;
+				}
 			}
 		}
+		
 		return {
 			label: label,
 			readonly: readonly,
