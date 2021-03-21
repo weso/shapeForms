@@ -35,6 +35,12 @@ function shExToForm() {
 		let id = $(this).prev().attr("id").replace(":", "\\:");
 		$(this).prev().clone().insertAfter("#container-" + id);
     });
+
+	$("#checkbtn").click(function() {
+		if(! $("#shexgform")[0].checkValidity()) {
+			$("#shexgform").find(':submit').click();
+		}
+	});
 });
 
 }
@@ -46,5 +52,7 @@ function backToEditor() {
 	$("#back").css("display", "none");
 	$("#resultform").css("display", "none");
 }
+
+
 
 
