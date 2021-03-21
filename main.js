@@ -126205,7 +126205,7 @@ class ShExParser {
 		form += this.fg.createForm(source.shapes[source.start.reference], source.start.reference);
 	}
     
-	form += '<input type="submit" value="Create"/>';
+	form += '<input type="submit" value="Check"/>';
     form += '</form>';
 
     return form;
@@ -126348,6 +126348,23 @@ class FormGenerator {
 				}
 				select += `</select>${button}</div>`;
 				return select;
+			}
+			else if(exp.valueExpr.datatype && 
+					exp.valueExpr.datatype === "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString") { //LANGSTRING
+				let facetas = this.getFacets(exp.valueExpr);
+				let required = "required";
+				if(exp.min === 0) {
+					required="";
+				}
+				let idDiv = "container-" + id;
+				let button = this.getAddButton(exp.max, id);	
+				return `<label for="${id}">${label}:</label>` +
+						`<div id="${idDiv}" class="langstring-div">
+						<div id="${id}">
+						<input type="text" name="${id}" class="langstring-st" ${readonly} ${required} ${facetas}/>
+						<input type="text" name="${id}-lg" value="en" class="langstring-lg" pattern="^[a-zA-Z]+(\-[a-zA-Z]+)?"></input>
+						</div>
+						${button}</div>`;
 			}
 			else {
 				let type = this.determineType(exp.valueExpr);

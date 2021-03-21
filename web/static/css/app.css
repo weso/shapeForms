@@ -149,3 +149,15 @@ label {
   background-color: darkgray;
 }
 
+.langstring-st {
+	width: 70%;
+}
+
+.langstring-lg {
+	width: 25%;
+}
+
+.langstring-div div:first-of-type {
+	display: contents;
+}
+
