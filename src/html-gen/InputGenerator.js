@@ -1,9 +1,11 @@
+const aux = require("./Auxiliar.js");
+
 class InputGenerator {
 
     getParameters(id, ve, ans, min, max) {
         this.id = id;
         this.label = id;
-        if(id.includes("-a")) {
+        if(id && id.includes("-a")) {
             this.label = "a";
         }
         this.readonly = "";
@@ -51,7 +53,7 @@ class InputGenerator {
                         <select id="${this.id}" name="${this.id}" ${this.required} ${this.size}>
                         <option></option>`;
         for(let i = 0; i < ve.values.length; i++) {
-            let valor = ve.values[i].value ? ve.values[i].value : this.getPrefixedTerm(ve.values[i]);
+            let valor = ve.values[i].value ? ve.values[i].value : aux.getPrefixedTerm(ve.values[i], this.prefixes);
             select += `<option value="${valor}">${valor}</option>`;
         }
         select += `</select>${this.button}</div>`;
@@ -121,20 +123,6 @@ class InputGenerator {
 		let button = `<a class="button newButton">+</a>`;
 		return button;
 	}
-
-    getPrefixedTerm(iri) {
-		for (const [key, value] of this.prefixes.entries()) {
-			if(iri.includes(key)) {
-				if(value !== "base") {
-					return value + ":" + iri.replace(key, "");
-				}
-                else {
-					let term = iri.replace(key, "");
-					return `&lt;${term}&gt;`
-				}
-            }
-		}
-    }
 
 }
 module.exports = new InputGenerator();

@@ -126234,7 +126234,53 @@ class ShExParser {
 }
 
 module.exports = new ShExParser();
-},{"./html-gen/FormGenerator.js":540,"shex":453}],540:[function(require,module,exports){
+},{"./html-gen/FormGenerator.js":541,"shex":453}],540:[function(require,module,exports){
+class Auxiliar {
+
+    getPrefixedTerm(iri, prfx) {
+		for (const [key, value] of prfx.entries()) {
+			if(iri.includes(key)) {
+				if(value !== "base") {
+					return value + ":" + iri.replace(key, "");
+				}
+                else {
+					let term = iri.replace(key, "");
+					return `&lt;${term}&gt;`
+				}
+            }
+		}
+    }
+
+    getAnnotations(ans) {
+		let label = "";
+		let readonly = "";
+		let size = "";
+		if(ans) {
+			for(let i = 0; i < ans.length; i++) {
+				if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
+					label = ans[i].object.value;
+				}
+				else if(ans[i].predicate === "http://www.w3.org/ns/ui#size") {
+					size = 'size="' + ans[i].object.value + '"';
+				}
+				else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
+					readonly = `readonly=${ans[i].object.value}`;
+				}
+			}
+		}
+		
+		return {
+			label: label,
+			readonly: readonly,
+			size: size
+		}
+	}
+
+}
+module.exports = new Auxiliar();
+},{}],541:[function(require,module,exports){
+const ig = require("./InputGenerator.js");
+const aux = require("./Auxiliar.js");
 
 class FormGenerator {
 
@@ -126253,15 +126299,15 @@ class FormGenerator {
 		this.current = shName;
 		//Nombre del formulario
 		if(shape.annotations) {
-			mainLabel = this.getAnnotations(shape.annotations).label;
+			mainLabel = aux.getAnnotations(shape.annotations).label;
 		}
 		if(label) {
 			mainLabel = label;
 		}
 		if(!mainLabel) {
-			let predicate = pred ? this.getPrefixedTerm(pred) + " (" : "";
+			let predicate = pred ? aux.getPrefixedTerm(pred, this.prefixes) + " (" : "";
 			let closure = pred ? ")" : "";
-			mainLabel = predicate + this.getPrefixedTerm(shName) + closure;
+			mainLabel = predicate + aux.getPrefixedTerm(shName, this.prefixes) + closure;
 		}
 		let form = `<h3>${mainLabel}</h3>`;
 		
@@ -126303,126 +126349,44 @@ class FormGenerator {
 	}
 	
 	checkTripleConstraint(exp) {
+		ig.prefixes = this.prefixes;
+		let id = aux.getPrefixedTerm(exp.predicate, this.prefixes);
+		let ans = null;
+		if(exp.annotations) {
+			ans = aux.getAnnotations(exp.annotations);
+		}
 		if(exp.predicate === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
 			if(exp.valueExpr.values.length <= 1) {
 				return "";
 			}
-			else {
-				let id = this.current + "-a";
-				let label = "a";
-				let res = this.getAnnotations(exp.annotations);
-				let size = res.size;
-				if(res.label !== "") {
-					label = res.label;
-				}
-				let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-				let button = this.getAddButton(exp.max);
-				let idDiv = "container-" + id;
-				let sel = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
-				sel += `<option></option>`;
-				for(let i = 0; i < exp.valueExpr.values.length; i++) {
-					let pValue = this.getPrefixedTerm(exp.valueExpr.values[i]);
-					sel += `<option value="${pValue}">${pValue}</option>`;
-				}
-				sel += `</select>${button}</div>`;
-				return sel;
+			else {	
+				let aid = this.current + "-a";
+				return ig.buildSelectInput(aid, exp.valueExpr, ans, exp.min, exp.max);
 			}
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "NodeConstraint") {
-			let id = this.getPrefixedTerm(exp.predicate);
-			let label = id;
-			let readonly = "";
-			let size = "";
-			if(exp.annotations) {
-				let res = this.getAnnotations(exp.annotations);
-				if(res.label !== "") {
-					label = res.label;
-				}
-				readonly = res.readonly;
-				size = res.size;
-			}
+			
 			if(exp.valueExpr.values) {	// [...]
-				//if(exp.valueExpr.values.length === 1) return "";
-				let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-				let button = this.getAddButton(exp.max);
-				let idDiv = "container-" + id;
-				let select = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
-				select += `<option></option>`;
-				for(let i = 0; i < exp.valueExpr.values.length; i++) {
-					let valor = exp.valueExpr.values[i].value ? exp.valueExpr.values[i].value : this.getPrefixedTerm(exp.valueExpr.values[i]);
-					select += `<option value="${valor}">${valor}</option>`;
-				}
-				select += `</select>${button}</div>`;
-				return select;
+				return ig.buildSelectInput(id, exp.valueExpr, ans, exp.min, exp.max);
 			}
 			else if(exp.valueExpr.datatype && 
 					exp.valueExpr.datatype === "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString") { //LANGSTRING
-				let facetas = this.getFacets(exp.valueExpr);
-				let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-				let idDiv = "container-" + id;
-				let button = this.getAddButton(exp.max, id);	
-				return `<label for="${id}">${label}:</label>` +
-						`<div id="${idDiv}" class="langstring-div">
-						<div id="${id}">
-						<input type="text" name="${id}" class="langstring-st" ${readonly} ${required} ${facetas}/>
-						<input type="text" name="${id}-lg" value="en" class="langstring-lg" pattern="^[a-zA-Z]+(\-[a-zA-Z]+)?"></input>
-						</div>
-						${button}</div>`;
+				return ig.buildLangStringInput(id, exp.valueExpr, ans, exp.min, exp.max);
 			}
 			else {
-				let type = this.determineType(exp.valueExpr);
-				let facetas = this.getFacets(exp.valueExpr);
-				let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-				let idDiv = "container-" + id;
-				let button = this.getAddButton(exp.max, id);	
-				return `<label for="${id}">${label}:</label>` +
-						`<div id="${idDiv}"><input type="${type}" id="${id}" name="${id}" ${readonly} ${required} ${facetas} ${size}>${button}</div>`;
+				return ig.buildBasicInput(id, exp.valueExpr, ans, exp.min, exp.max);
 			}
 			
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "ShapeRef") {
-			let div = "";
 			let refShape = this.shapes[exp.valueExpr.reference];
-			let label = "";
-			let res = this.getAnnotations(exp.annotations);
-			if(res.label !== "") { label = res.label; }
 			if(refShape.type === "NodeConstraint") {
-				let id = this.getPrefixedTerm(exp.predicate);
-				if(label === "") label = id;
 				let nodekind = refShape.nodeKind;
-				let size = res.size;
-				let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-				let button = this.getAddButton(exp.max);
-				let idDiv = "container-" + id;
 				if(nodekind) { 		//:Work IRI
-					let type = this.determineType(refShape);
-					div += `<label for="${id}">${label}:</label>` +
-						`<div id="${idDiv}"><input type="${type}" id="${id}" name="${id}" ${required} ${size}>${button}</div>`;
+					return ig.buildBasicInput(id, refShape, ans, exp.min, exp.max);
 				}
 				else { // <#vcard_country-name> ["Afghanistan", ...]	  
-					let idDiv = "container-" + id;
-					div = `<label for="${id}">${label}:</label><div id="${idDiv}"><select id="${id}" name="${id}" ${required} ${size}>`;
-					div += `<option></option>`;
-					for(let i = 0; i < refShape.values.length; i++) {
-						let valor = refShape.values[i].value ? refShape.values[i].value : this.getPrefixedTerm(refShape.values[i]);
-						div += `<option value="${valor}">${valor}</option>`;
-					}
-					div += `</select>${button}</div>`;
+					return ig.buildSelectInput(id, refShape, ans, exp.min, exp.max);
 				}
 				
 			}
@@ -126430,63 +126394,106 @@ class FormGenerator {
 				if(this.current === exp.valueExpr.reference) return "";
 				//Guardamos la shape actual
 				let prev = this.current;
-				div = '<div class="innerform">';
+				let div = '<div class="innerform">';
+				let label = "";
+				if(ans) {
+					label = ans.label;
+				}
 				div += this.createForm(refShape, exp.valueExpr.reference, exp.predicate, label);
 				//Recuperamos el valor
 				this.current = prev;
 				this.recursividad--;
 				div += '</div>';
+				return div;
 			}
-			return div;
 		}
 		else if(!exp.valueExpr) {	// . ;
-			let id = this.getPrefixedTerm(exp.predicate);
-			let label = id;
-			let readonly = "";
-			let size = "";
-			let required = "required";
-				if(exp.min === 0) {
-					required="";
-				}
-			if(exp.annotations) {
-				let res = this.getAnnotations(exp.annotations);
-				if(res.label !== "") { label = res.label; }
-				readonly = res.readonly;
-				size = res.size;
-			}
-			let idDiv = "container-" + id;
-			let button = this.getAddButton(exp.max);
-			return `<label for="${id}">${label}:</label>` +
-					`<div id="${idDiv}"><input type="text" id="${id}" name="${id}" ${readonly} ${required} ${size}>${button}</div>`;
+			return ig.buildBasicInput(exp.predicate, null, ans, exp.min, exp.max);
 		}
 	}
 	
-	getAnnotations(ans) {
-		let label = "";
-		let readonly = "";
-		let size = "";
-		if(ans) {
-			for(let i = 0; i < ans.length; i++) {
-				if(ans[i].predicate === "http://www.w3.org/ns/ui#label") {
-					label = ans[i].object.value;
-				}
-				else if(ans[i].predicate === "http://www.w3.org/ns/ui#size") {
-					size = 'size="' + ans[i].object.value + '"';
-				}
-				else if(ans[i].predicate === "http://janeirodigital.com/layout#readonly") {
-					readonly = `readonly=${ans[i].object.value}`;
-				}
-			}
-		}
-		
-		return {
-			label: label,
-			readonly: readonly,
-			size: size
-		}
-	}
-	
-	determineType(ve) {
+
+}
+module.exports = FormGenerator;
+},{"./Auxiliar.js":540,"./InputGenerator.js":542}],542:[function(require,module,exports){
+const aux = require("./Auxiliar.js");
+
+class InputGenerator {
+
+    getParameters(id, ve, ans, min, max) {
+        this.id = id;
+        this.label = id;
+        if(id && id.includes("-a")) {
+            this.label = "a";
+        }
+        this.readonly = "";
+        this.size = "";
+        if(ans) {
+            if(ans.label !== "") {
+                this.label = ans.label;
+            }
+            this.readonly = ans.readonly;
+            this.size = ans.size;
+        }
+
+        this.type = this.determineType(ve);
+        this.facetas = this.getFacets(ve);
+        this.required = "required";
+        if(min === 0) {
+            this.required="";
+        }
+        this.idDiv = "container-" + id;
+        this.button = this.getAddButton(max);
+
+    }
+
+    /* 
+    * id, ve (Value Expression/RefShape), ans (Annotations)
+    */
+    buildBasicInput(id, ve, ans, min, max) {
+
+        this.getParameters(id, ve, ans, min, max);
+        
+        return `<label for="${this.id}">${this.label}:</label>` +
+				`<div id="${this.idDiv}">
+                <input type="${this.type}" id="${this.id}" name="${this.id}" 
+                ${this.readonly} ${this.required} ${this.facetas} ${this.size}>
+                ${this.button}</div>`;
+			
+    }
+
+    buildSelectInput(id, ve, ans, min, max) {
+
+        this.getParameters(id, ve, ans, min, max);
+
+        let select = `<label for="${this.id}">${this.label}:</label>
+                        <div id="${this.idDiv}">
+                        <select id="${this.id}" name="${this.id}" ${this.required} ${this.size}>
+                        <option></option>`;
+        for(let i = 0; i < ve.values.length; i++) {
+            let valor = ve.values[i].value ? ve.values[i].value : aux.getPrefixedTerm(ve.values[i], this.prefixes);
+            select += `<option value="${valor}">${valor}</option>`;
+        }
+        select += `</select>${this.button}</div>`;
+        return select;
+			
+    }
+
+    buildLangStringInput(id, ve, ans, min, max) {
+
+        this.getParameters(id, ve, ans, min, max);
+        
+        return `<label for="${this.id}">${this.label}:</label>` +
+                `<div id="${this.idDiv}" class="langstring-div">
+                <div id="${this.id}">
+                <input type="text" name="${this.id}" class="langstring-st" ${this.readonly} ${this.required} ${this.facetas}/>
+                <input type="text" name="${this.id}-lg" value="en" class="langstring-lg" pattern="^[a-zA-Z]+(\-[a-zA-Z]+)?"></input>
+                </div>
+                ${this.button}</div>`;
+			
+    }
+
+    determineType(ve) {
 		if(ve.nodeKind === "iri") {
 			return "url";
 		}
@@ -126527,7 +126534,7 @@ class FormGenerator {
 		return fcs;
 	}
 	
-	getAddButton(max, id) {
+	getAddButton(max) {
 		if(!max || max === 1) {
 			return "";
 		}
@@ -126535,26 +126542,9 @@ class FormGenerator {
 		return button;
 	}
 
-    clear() {
-    }
-	
-	getPrefixedTerm(iri) {
-		for (const [key, value] of this.prefixes.entries()) {
-			if(iri.includes(key)) {
-				if(value !== "base") {
-					return value + ":" + iri.replace(key, "");
-				}
-                else {
-					let term = iri.replace(key, "");
-					return `&lt;${term}&gt;`
-				}
-            }
-		}
-    }
-
 }
-module.exports = FormGenerator;
-},{}],541:[function(require,module,exports){
+module.exports = new InputGenerator();
+},{"./Auxiliar.js":540}],543:[function(require,module,exports){
 const $ = require('jquery');
 const ShexParser = require ("../../src/ShExParser.js");
 
@@ -126614,4 +126604,4 @@ function backToEditor() {
 
 
 
-},{"../../src/ShExParser.js":539,"jquery":298}]},{},[541]);
+},{"../../src/ShExParser.js":539,"jquery":298}]},{},[543]);

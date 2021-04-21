@@ -1,4 +1,5 @@
-const ig = require("./InputGenerator");
+const ig = require("./InputGenerator.js");
+const aux = require("./Auxiliar.js");
 
 class FormGenerator {
 
@@ -17,15 +18,15 @@ class FormGenerator {
 		this.current = shName;
 		//Nombre del formulario
 		if(shape.annotations) {
-			mainLabel = this.getAnnotations(shape.annotations).label;
+			mainLabel = aux.getAnnotations(shape.annotations).label;
 		}
 		if(label) {
 			mainLabel = label;
 		}
 		if(!mainLabel) {
-			let predicate = pred ? this.getPrefixedTerm(pred) + " (" : "";
+			let predicate = pred ? aux.getPrefixedTerm(pred, this.prefixes) + " (" : "";
 			let closure = pred ? ")" : "";
-			mainLabel = predicate + this.getPrefixedTerm(shName) + closure;
+			mainLabel = predicate + aux.getPrefixedTerm(shName, this.prefixes) + closure;
 		}
 		let form = `<h3>${mainLabel}</h3>`;
 		
@@ -67,20 +68,23 @@ class FormGenerator {
 	}
 	
 	checkTripleConstraint(exp) {
+		ig.prefixes = this.prefixes;
+		let id = aux.getPrefixedTerm(exp.predicate, this.prefixes);
+		let ans = null;
+		if(exp.annotations) {
+			ans = aux.getAnnotations(exp.annotations);
+		}
 		if(exp.predicate === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
 			if(exp.valueExpr.values.length <= 1) {
 				return "";
 			}
 			else {	
-				return ig.buildSelectInput(id, exp.valueExpr, ans, exp.min, exp.max);
+				let aid = this.current + "-a";
+				return ig.buildSelectInput(aid, exp.valueExpr, ans, exp.min, exp.max);
 			}
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "NodeConstraint") {
-			let ans = null;
-			if(exp.annotations) {
-				ans = this.getAnnotations(exp.annotations);
-			}
-			let id = this.getPrefixedTerm(pr)
+			
 			if(exp.valueExpr.values) {	// [...]
 				return ig.buildSelectInput(id, exp.valueExpr, ans, exp.min, exp.max);
 			}
@@ -95,9 +99,7 @@ class FormGenerator {
 		}
 		else if(exp.valueExpr && exp.valueExpr.type === "ShapeRef") {
 			let refShape = this.shapes[exp.valueExpr.reference];
-			let ans = this.getAnnotations(exp.annotations);
 			if(refShape.type === "NodeConstraint") {
-				let id = this.getPrefixedTerm(exp.predicate);
 				let nodekind = refShape.nodeKind;
 				if(nodekind) { 		//:Work IRI
 					return ig.buildBasicInput(id, refShape, ans, exp.min, exp.max);
@@ -111,36 +113,24 @@ class FormGenerator {
 				if(this.current === exp.valueExpr.reference) return "";
 				//Guardamos la shape actual
 				let prev = this.current;
-				div = '<div class="innerform">';
+				let div = '<div class="innerform">';
+				let label = "";
+				if(ans) {
+					label = ans.label;
+				}
 				div += this.createForm(refShape, exp.valueExpr.reference, exp.predicate, label);
 				//Recuperamos el valor
 				this.current = prev;
 				this.recursividad--;
 				div += '</div>';
+				return div;
 			}
-			return div;
 		}
 		else if(!exp.valueExpr) {	// . ;
 			return ig.buildBasicInput(exp.predicate, null, ans, exp.min, exp.max);
 		}
 	}
-
-    clear() {
-    }
 	
-	getPrefixedTerm(iri) {
-		for (const [key, value] of this.prefixes.entries()) {
-			if(iri.includes(key)) {
-				if(value !== "base") {
-					return value + ":" + iri.replace(key, "");
-				}
-                else {
-					let term = iri.replace(key, "");
-					return `&lt;${term}&gt;`
-				}
-            }
-		}
-    }
 
 }
 module.exports = FormGenerator;
