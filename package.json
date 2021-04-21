@@ -1,8 +1,7 @@
 {
-  "name": "shapeForms",
-  "version": "0.0.1",
+  "name": "@weso/shapeforms",
+  "version": "0.0.2",
   "main": "main.js",
-  "private": true,
   "dependencies": {
     "browserify": "^17.0.0",
     "jquery": "^3.5.1",
@@ -11,5 +10,9 @@
   "scripts": {
     "build": "browserify web/js/EditorController.js > main.js"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "files": ["src/*"],
   "devDependencies": {}
 }
