@@ -10,4 +10,5 @@ build/Release
 node_modules/
 
 .npmrc
+index.js
 
