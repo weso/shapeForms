@@ -19,6 +19,12 @@ let shxtx = $('#shextoform');
 
 shxtx.click(shExToForm);
 
+var id = 0;
+
+function getID() {
+	return id++;
+}
+
 function shExToForm() {
 	let text = shExEditor.getValue();
 	
@@ -31,10 +37,16 @@ function shExToForm() {
 	$("#resultform").css("display", "inherit");
 	
 	$( ".newButton" ).each(function(index) {
-    $(this).on("click", function(){
-		let id = $(this).prev().attr("id").replace(":", "\\:");
-		$(this).prev().clone().insertAfter("#container-" + id);
-    });
+		$(this).on("click", function(){
+			let id = $(this).prev().attr("id").replace(":", "\\:");
+			let copy = $(this).prev().clone();
+			let copyIDn = getID();
+			let copyID = "copy" + copyIDn;
+			$("#container-" + id).after(`<div id="${copyID}"></div>`);
+			$("#" + copyID).append(copy);
+			$("#" + copyID).append("<a class='button delButton'>×</a>");
+			$(`#${copyID} input`).attr("id", $(`#${copyID} input`).attr("id") + copyIDn);
+		});
 
 	$("#checkbtn").click(function() {
 		if(! $("#shexgform")[0].checkValidity()) {
