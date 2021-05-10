@@ -4,6 +4,25 @@ This project can generate UI forms from [ShEx](http://shex.io) schemas.
 
 It takes annotations from the [UI ontology](http://www.w3.org/ns/ui#) which can, for example, customize labels.
 
+## Functionality
+
+Two functions are provided in order to build a form from a given Shape Expression.
+
+### _shexToForm(shex)_
+Takes as a parameter the Shape Expression to transform, as a String. Returns the HTML Form with the equivalent fields, as a String.
+
+### _postProcess()_
+Once the form HTML has been integrated in a page, this function looks for and assigns events to the elements which require it ("New", "Check" buttons)
+
+A simple example of use:
+```
+let html = sf.shexToForm(text);
+	
+$("#resultform").html(html);
+
+sf.postProcess();
+```
+
 ## Adoption
 
 The project has been deployed in [RDFShape](http://rdfshape.weso.es).
