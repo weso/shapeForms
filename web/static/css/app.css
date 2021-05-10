@@ -93,6 +93,10 @@ label {
 	padding-bottom: 0.286em;
 }
 
+a.delButton {
+    margin-left: 1.2em;
+}
+
 .wikidata {
 	display: grid;
 	border: 0.071em solid #a2a9b1;
